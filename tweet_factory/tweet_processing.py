@@ -8,6 +8,11 @@ CONSUMER_SECRET = "Q5QPiTiapz1GewGV2aeLWoT8IoWXhjBFrC9bsQRvjOjpTSacPK"
 TOKEN_KEY = "435217839-v08vYEBqddJQYHmH42ih269a6QsY0G4SozqEbs4P"
 TOKEN_SECRET = "aYREePRSAlWpPyBQvs3VOYbHnt8w2UZCWyTj21yGzQGzW"
 
+#This handles Twitter authetification and the connection to Twitter Streaming API
+auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+auth.set_access_token(TOKEN_KEY, TOKEN_SECRET)
+api = tweepy.API(auth)
+
 #Hash to store squads social information
 screen_names = {}
 
@@ -40,11 +45,7 @@ def update_hash(screen_name):
     for tweet in tweets:
         print tweet.retweet_count
 
-if __name__ == '__main__':
-    #This handles Twitter authetification and the connection to Twitter Streaming API
-    auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-    auth.set_access_token(TOKEN_KEY, TOKEN_SECRET)
-    api = tweepy.API(auth)
+def tweet_processing():
     #Initialize hash
     init_hash(0)
     #Update hash
