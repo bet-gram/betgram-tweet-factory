@@ -1,6 +1,7 @@
 # all the imports
 import sqlite3
 import tweet_processing
+from threading import Thread
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
@@ -43,5 +44,6 @@ def show_entries():
     return render_template('show_entries.html', entries=entries)
 
 if __name__ == '__main__':
-    tweet_processing.tweet_processing()
+    thread = Thread(target = tweet_processing.tweet_processing)
+    thread.start()
     app.run()
