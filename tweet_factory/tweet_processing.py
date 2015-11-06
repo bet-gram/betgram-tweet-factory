@@ -13,41 +13,33 @@ auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(TOKEN_KEY, TOKEN_SECRET)
 api = tweepy.API(auth)
 
-#Hash to store squads social information
+#Squad list
+squads = ["ManUtd","SwansOfficial","BurnleyOfficial","WBAFCofficial","whufc_official","LCFC","SpursOfficial","HullCity","CPFC","QPRFC","SouthamptonFC","stokecity","NUFC","Arsenal","SunderlandAFC","AVFCOfficial","ChelseaFC","LFC","Everton","MCFC"]
+
+#Hash to store squads social information: followers, retweet_count and favorite_count for last 50 tweets
 screen_names = {}
 
 #Procedure to initialize hash values
-def init_hash(init):
-    screen_names["ManUtd"] = init
-    screen_names["SwansOfficial"] = init
-    screen_names["BurnleyOfficial"] = init
-    screen_names["WBAFCofficial"] = init
-    screen_names["whufc_official"] = init
-    screen_names["LCFC"] = init
-    screen_names["SpursOfficial"] = init
-    screen_names["HullCity"] = init
-    screen_names["CPFC"] = init
-    screen_names["QPRFC"] = init
-    screen_names["SouthamptonFC"] = init
-    screen_names["stokecity"] = init
-    screen_names["NUFC"] = init
-    screen_names["Arsenal"] = init
-    screen_names["SunderlandAFC"] = init
-    screen_names["AVFCOfficial"] = init
-    screen_names["ChelseaFC"] = init
-    screen_names["LFC"] = init
-    screen_names["Everton"] = init
-    screen_names["MCFC"] = init
+def init_hash():
+    for squad in squads:
+        screen_names[squad] = {'follower_count':0,'retweet_count':0,'favorite_count':0}
 
 def update_hash(screen_name):
+    follower_count = 0
+    retweet_count = 0
+    favorite_count = 0
     tweets = api.user_timeline(screen_name = screen_name, count = 50)
-    print screen_name
     for tweet in tweets:
-        print tweet.retweet_count
+        retweet_count = retweet_count + tweet.retweet_count
+        favorite_count = favorite_count + tweet.favorite_count
+    screen_names[screen_name]['follower_count'] = follower_count
+    screen_names[screen_name]['retweet_count'] = retweet_count
+    screen_names[screen_name]['favorite_count'] = favorite_count
 
 def tweet_processing():
     #Initialize hash
-    init_hash(0)
+    init_hash()
     #Update hash
-    for screen_name in screen_names:
+    for screen_name in screen_names.keys():
         update_hash(screen_name)
+    print screen_names
