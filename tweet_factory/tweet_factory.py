@@ -2,18 +2,19 @@
 import sqlite3
 import tweet_processing
 from threading import Thread
+from multiprocessing.pool import ThreadPool
 from contextlib import closing
 from flask import Flask, request, session, g, redirect, url_for, \
      abort, render_template, flash
 
-# configuration
+#Configuration
 DATABASE = '/tmp/flaskr.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
-# create our little application :)
+#Little application :)
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
@@ -39,11 +40,15 @@ def teardown_request(exception):
 
 @app.route('/')
 def show_entries():
-    cur = g.db.execute('select title, text from entries order by id desc')
-    entries = [dict(title=row[0], text=row[1]) for row in cur.fetchall()]
+    cur = g.db.execute('select * from metrics order by retweet_count desc')
+    entries = [dict(screen_name=row[0],follower_count=row[1],retweet_count=row[2],favorite_count=row[3]) for row in cur.fetchall()]
     return render_template('show_entries.html', entries=entries)
 
 if __name__ == '__main__':
-    thread = Thread(target = tweet_processing.tweet_processing)
-    thread.start()
     app.run()
+    #thread = Thread(target = tweet_processing.tweet_processing)
+    #thread.start()
+    pool = ThreadPool(processes=1)
+    async_result = pool.apply_async(tweet_processing.tweet_processing)
+    screen_names = async_result.get()
+    print screen_names

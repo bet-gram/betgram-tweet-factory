@@ -24,6 +24,7 @@ def init_hash():
     for squad in squads:
         screen_names[squad] = {'follower_count':0,'retweet_count':0,'favorite_count':0}
 
+#Procedure to update hash values
 def update_hash(screen_name):
     follower_count = 0
     retweet_count = 0
@@ -36,10 +37,11 @@ def update_hash(screen_name):
     screen_names[screen_name]['retweet_count'] = retweet_count
     screen_names[screen_name]['favorite_count'] = favorite_count
 
+#Main procedure called by Flask app
 def tweet_processing():
     #Initialize hash
     init_hash()
     #Update hash
     for screen_name in screen_names.keys():
         update_hash(screen_name)
-    print screen_names
+    return screen_names
