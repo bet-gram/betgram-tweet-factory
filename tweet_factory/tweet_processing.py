@@ -19,23 +19,25 @@ squads = ["ManUtd","SwansOfficial","BurnleyOfficial","WBAFCofficial","whufc_offi
 #Hash to store squads social information: followers, retweet_count and favorite_count for last 50 tweets
 screen_names = {}
 
+#Number of tweets to consider
+n_last_tweets = 50
+
 #Procedure to initialize hash values
 def init_hash():
     for squad in squads:
-        screen_names[squad] = {'follower_count':0,'retweet_count':0,'favorite_count':0}
+        screen_names[squad] = {'follower_count':0,'retweet_count':0}
 
 #Procedure to update hash values
 def update_hash(screen_name):
     follower_count = 0
     retweet_count = 0
-    favorite_count = 0
-    tweets = api.user_timeline(screen_name = screen_name, count = 50)
+    user = api.get_user(screen_name = screen_name)
+    follower_count = user.followers_count
+    tweets = api.user_timeline(screen_name = screen_name, count = n_last_tweets)
     for tweet in tweets:
         retweet_count = retweet_count + tweet.retweet_count
-        favorite_count = favorite_count + tweet.favorite_count
     screen_names[screen_name]['follower_count'] = follower_count
     screen_names[screen_name]['retweet_count'] = retweet_count
-    screen_names[screen_name]['favorite_count'] = favorite_count
 
 #Main procedure called by Flask app
 def tweet_processing():

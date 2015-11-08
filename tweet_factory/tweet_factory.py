@@ -1,10 +1,11 @@
 # all the imports
 import sqlite3
 import tweet_processing
+import flask
 from threading import Thread
 from multiprocessing.pool import ThreadPool
 from contextlib import closing
-from flask import Flask, request, session, g, redirect, url_for, \
+from flask import Flask, jsonify, request, session, g, redirect, url_for, \
      abort, render_template, flash
 
 #Configuration
@@ -41,8 +42,20 @@ def teardown_request(exception):
 @app.route('/')
 def show_entries():
     cur = g.db.execute('select * from metrics order by retweet_count desc')
-    entries = [dict(screen_name=row[0],follower_count=row[1],retweet_count=row[2],favorite_count=row[3]) for row in cur.fetchall()]
+    entries = [dict(screen_name=row[0],follower_count=row[1],retweet_count=row[2],weighted_rt_index=row[3]) for row in cur.fetchall()]
     return render_template('show_entries.html', entries=entries)
+
+@app.route('/metrics')
+def return_metrics():
+        cur = g.db.execute('select * from metrics order by retweet_count desc')
+        entries = [dict(screen_name=row[0],follower_count=row[1],retweet_count=row[2],weighted_rt_index=row[3]) for row in cur.fetchall()]
+        return flask.jsonify(results=entries)
+
+def add_entry(screen_name,follower_count,retweet_count):
+    params = (screen_name,follower_count,retweet_count,1000000*retweet_count/(follower_count*tweet_processing.n_last_tweets))
+    print params
+    g.db.execute('insert into metrics values (?,?,?,?)', params)
+    g.db.commit()
 
 def app_run():
     app.run(use_reloader=False)
@@ -50,5 +63,8 @@ def app_run():
 if __name__ == '__main__':
     thread = Thread(target = app_run)
     thread.start()
-    screen_names = tweet_processing.tweet_processing()
-    print screen_names
+    #screen_names = tweet_processing.tweet_processing()
+    #for squad, metrics in screen_names.iteritems():
+        #with app.app_context():
+            #g.db = connect_db()
+            #add_entry(squad,metrics['follower_count'],metrics['retweet_count'])

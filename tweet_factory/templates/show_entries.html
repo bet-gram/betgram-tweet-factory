@@ -2,7 +2,7 @@
 {% block body %}
   <ul class=entries>
   {% for entry in entries %}
-    <li><h2>{{ entry.screen_name }}</h2>{{ entry.follower_count|safe }}
+    <li><h2>{{ entry.screen_name }}</h2><li>{{ entry.follower_count|round }}<li>{{ entry.retweet_count|round }}<li>{{ entry.weighted_rt_index|round(5,'floor') }}
   {% else %}
     <li><em>Unbelievable.  No entries here so far</em>
   {% endfor %}
