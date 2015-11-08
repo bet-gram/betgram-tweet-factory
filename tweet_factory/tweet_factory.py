@@ -44,11 +44,11 @@ def show_entries():
     entries = [dict(screen_name=row[0],follower_count=row[1],retweet_count=row[2],favorite_count=row[3]) for row in cur.fetchall()]
     return render_template('show_entries.html', entries=entries)
 
+def app_run():
+    app.run(use_reloader=False)
+
 if __name__ == '__main__':
-    app.run()
-    #thread = Thread(target = tweet_processing.tweet_processing)
-    #thread.start()
-    pool = ThreadPool(processes=1)
-    async_result = pool.apply_async(tweet_processing.tweet_processing)
-    screen_names = async_result.get()
+    thread = Thread(target = app_run)
+    thread.start()
+    screen_names = tweet_processing.tweet_processing()
     print screen_names
