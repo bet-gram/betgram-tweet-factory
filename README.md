@@ -5,7 +5,7 @@ Todo debería estar en el requirements.txt
 
 ### Ejecución
 
-El puerto por defaulr es el 5000.
+El puerto por default es el 5000.
 
 Para la primera ejecución tienen que crear la base de datos poniendo en un shell de python en consola:
 ```sh
@@ -26,7 +26,7 @@ Dada la baja proporción de tweets geolocalizados y los límites del API de Twit
 
 ![/metrics](metrics.png).
 
-weighted_rt_index es una aproximación al porcentaje de seguidores que le han dado retweets a los últimos tweets de una cuenta. Yo creo que la podemos usar como métrica social. 
+weighted_rt_index es una aproximación al porcentaje de seguidores que le han dado retweets a los últimos tweets de una cuenta. Yo creo que la podemos usar como métrica social. Da unos resultados interesantes.
 
 /geo
 
