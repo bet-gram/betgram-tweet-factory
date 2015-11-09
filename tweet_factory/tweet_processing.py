@@ -29,6 +29,8 @@ def init_hash():
 
 #Procedure to update hash values
 def update_hash(screen_name):
+    since_id = "662035721235136512"
+    max_id = "663589373770932224"
     search_results = api.search(q=screen_name,since_id="662035721235136512",max_id="663589373770932224")
     for search_result in search_results:
         screen_names[screen_name][search_result.id_str] = ""
