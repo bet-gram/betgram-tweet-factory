@@ -10,7 +10,7 @@ from contextlib import closing
 from flask import Flask, jsonify, request, session, g, redirect, url_for, \
      abort, render_template, flash
 
-#Configuration
+#Flask Configuration
 DATABASE = '/tmp/flaskr.db'
 DEBUG = True
 SECRET_KEY = 'development key'
