@@ -16,11 +16,11 @@ api = tweepy.API(auth)
 #Squad list
 squads = ["ManUtd","SwansOfficial","BurnleyOfficial","WBAFCofficial","whufc_official","LCFC","SpursOfficial","HullCity","CPFC","QPRFC","SouthamptonFC","stokecity","NUFC","Arsenal","SunderlandAFC","AVFCOfficial","ChelseaFC","LFC","Everton","MCFC"]
 
-#Hash to store squads geo information: tweet id, geo
+#Hash to store squads tweet information: tweet id,
 screen_names = {}
 
 #Number of tweets to consider
-n_tweets = 100
+n_tweets = 1000
 
 #Procedure to initialize hash values
 def init_hash():
@@ -29,7 +29,7 @@ def init_hash():
 
 #Procedure to update hash values
 def update_hash(screen_name):
-    search_results = api.search(q=screen_name,count=n_tweets)
+    search_results = api.search(q=screen_name,since_id="662035721235136512",max_id="663589373770932224")
     for search_result in search_results:
         screen_names[screen_name][search_result.id_str] = ""
 
@@ -40,5 +40,4 @@ def tweet_processing():
     #Update hash
     for screen_name in screen_names.keys():
         update_hash(screen_name)
-    print screen_names
     return screen_names

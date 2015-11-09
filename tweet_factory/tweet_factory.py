@@ -55,7 +55,7 @@ def return_metrics():
 
 @app.route('/tweets')
 def return_tweets():
-    cur = g.db.execute('select * from tweets order by tweet_id desc')
+    cur = g.db.execute('select * from tweets order by screen_name desc')
     entries = [dict(screen_name=row[0],tweet_id=row[1]) for row in cur.fetchall()]
     return flask.jsonify(results=entries)
 
@@ -87,11 +87,12 @@ if __name__ == '__main__':
 
     while True:
         screen_names = tweet_processing.tweet_processing()
-        for squad, tweet_id in screen_names.iteritems():
-            with app.app_context():
-                g.db = connect_db()
-                #try:
-                add_entry_tweets(squad,tweet_id)
-                #except:
-                #    pass
-                time.sleep(200)
+        for squad, tweet_ids in screen_names.iteritems():
+            for tweet_id, nothing in tweet_ids.iteritems():
+                with app.app_context():
+                    g.db = connect_db()
+                    try:
+                        add_entry_tweets(squad,tweet_id)
+                    except:
+                        pass
+        time.sleep(200)
