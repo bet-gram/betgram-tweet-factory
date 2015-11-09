@@ -16,26 +16,31 @@ api = tweepy.API(auth)
 #Squad list
 squads = ["ManUtd","SwansOfficial","BurnleyOfficial","WBAFCofficial","whufc_official","LCFC","SpursOfficial","HullCity","CPFC","QPRFC","SouthamptonFC","stokecity","NUFC","Arsenal","SunderlandAFC","AVFCOfficial","ChelseaFC","LFC","Everton","MCFC"]
 
-#Hash to store squads geo information: tweet id, latitude, longitude
+#Hash to store squads social information: followers, retweet_count and favorite_count for last 50 tweets
 screen_names = {}
 
 #Number of tweets to consider
-n_tweets = 100
+n_last_tweets = 50
 
 #Procedure to initialize hash values
 def init_hash():
     for squad in squads:
-        screen_names[squad] = {}
+        screen_names[squad] = {'follower_count':0,'retweet_count':0}
 
 #Procedure to update hash values
 def update_hash(screen_name):
-    search_results = api.search(q=screen_name,count=n_tweets)
-    for search_result in search_results:
-        if(search_result.geo!=None):
-            screen_names[screen_name][search_result.id_str] = search_result.geo
+    follower_count = 0
+    retweet_count = 0
+    user = api.get_user(screen_name = screen_name)
+    follower_count = user.followers_count
+    tweets = api.user_timeline(screen_name = screen_name, count = n_last_tweets)
+    for tweet in tweets:
+        retweet_count = retweet_count + tweet.retweet_count
+    screen_names[screen_name]['follower_count'] = follower_count
+    screen_names[screen_name]['retweet_count'] = retweet_count
 
 #Main procedure called by Flask app
-def geo_processing():
+def metric_processing():
     #Initialize hash
     init_hash()
     #Update hash
